@@ -1,0 +1,64 @@
+<div class="page_function">
+  <div class="info">
+    <h3>站点统计</h3>
+    <small>网站访问统计插件 - BY 杨飞</small> </div>
+</div>
+  <div class="page_main">
+    <div class="page_table form_table">
+      <h3>访问次数统计</h3>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120">总访问量</td>
+          <td width="300">{$sum}</td>
+          <td>页面总访问量</td>
+        </tr>
+        <tr>
+          <td width="120">月访问量</td>
+          <td width="300">{$month}</td>
+          <td>页面本月访问量</td>
+        </tr>
+        <tr>
+          <td width="120">日访问量</td>
+          <td width="300">{$day}</td>
+          <td>页面今日访问量</td>
+        </tr>
+      </table>
+      <h3>IP访问统计</h3>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120">总IP</td>
+          <td width="300"><?php print_r($sum_ip) ?></td>
+          <td>页面真实IP访问量</td>
+        </tr>
+        <tr>
+          <td width="120">月IP</td>
+          <td width="300"><?php print_r($month_ip) ?></td>
+          <td>页面本月IP访问量</td>
+        </tr>
+        <tr>
+          <td width="120">日IP</td>
+          <td width="300"><?php print_r($day_ip) ?></td>
+          <td>页面今日IP访问量</td>
+        </tr>
+      </table>
+      <h3>重置统计</h3>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120">重置统计数据</td>
+          <td width="300"><a href="javascript:;" onclick="reset_visits()" class="button">重置</a></td>
+          <td><font color="#f00">重置所有统计数据，不可恢复！</font></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  
+<script type="text/javascript">
+//提交表单
+saveform({success:function(msg){tip({msg:msg})}});
+
+function reset_visits(){
+	ajaxpost_w({url:'__URL__/reset_visits',tip:1});
+	setTimeout("window.location.reload()",1000)
+	
+}
+</script>
