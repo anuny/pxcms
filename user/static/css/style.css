@@ -1,0 +1,30 @@
+body{font-size:12px}
+.login{ background:#f5f5f5}
+.login .header{ font-size:24px; text-align:center; font-weight:bold;}
+.login .container{ width:400px; background:#fff; border-radius:4px;}
+.login .footer{ text-align:center}
+@media (max-width:400px){
+	.login .container{ width:90%; background:#fff; border-radius:4px; margin:5%}
+}
+
+
+
+
+.masthead{background-color: #f5f5f5;}
+
+.masthead .masthead-logo{ font-size:20px; font-weight:bold; display:inline-block}
+.masthead .search{display:inline-block;}
+.masthead .masthead-nav{display:inline-block;float:right}
+.masthead .masthead-nav li{ float:left; list-style:none; margin-left:10px;}
+.masthead .masthead-nav li a{ color:#000}
+@media (max-width: 34em){
+	.masthead{ text-align:center}
+	.masthead .search{margin-top:0.5rem}
+	.masthead .masthead-nav{float:none; margin-top:1rem}
+	.masthead .masthead-nav li{ margin:0 5px;}
+}
+
+table { line-height:30px}
+table tr.th{ font-weight:bold}
+table tr:hover{background:#f5f5f5}
+
