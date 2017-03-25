@@ -26,6 +26,7 @@ class View {
     public function __construct(){
 		$config = config::get();
         $this->tplDir = USER_ROOT . 'theme' . DS . $config['MODULE'] . '.'  . $config['THEME'] . DS;
+		unset($config);
     }
     /**
      * 为视图引擎设置一个模板变量
