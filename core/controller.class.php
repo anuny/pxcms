@@ -54,7 +54,7 @@ class Controller {
      * @param void
      */
     protected function redirect($url){
-        header("Location: $url");
+        header("Location: $url",false, 301);
         exit;
     }
 }

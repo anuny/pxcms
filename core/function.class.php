@@ -7,7 +7,6 @@ function  controller($module){
 		return $module_obj[$module];
 	}	
 	$modulePath = USER_ROOT .'app' .DS. config::get('MODULE') .DS.'controller' . DS . $module .'Controller.class.php';
-	echo $modulePath;
 	if(file_exists($modulePath)){
 			require_once($modulePath);
 			$classname=$module.'Controller';
@@ -58,6 +57,15 @@ function isAjax(){
 function isGet(){
     return $_SERVER['REQUEST_METHOD'] == 'GET' ? true : false;
 }
+
+
+//脚本运行时间
+function runtime(){
+	define('ETIME', microtime(true));
+	$runTime = number_format(ETIME - STIME, 4);
+	return $runTime;
+}
+	
 
 /**
  * 是否是POST提交

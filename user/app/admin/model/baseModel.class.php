@@ -5,6 +5,7 @@
 */
 
 class baseModel extends Controller{
-
-
+	protected function hook(){
+		$this->config = config::get();
+	}
 } 

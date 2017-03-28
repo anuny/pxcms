@@ -2,16 +2,63 @@
 
 class settingController extends baseController {
 	
-	public function index(){	
-		if(isPost()){
-			$this->submit();
+	public function index(){
+		$module = $this->config['MODULE'];
+		$controller = $this->config['CONTROLLER'];
+		foreach ($this->menu as $key=>$v){
+			if($v['pid'] && $v['module'] == $module && $v['controller'] == $controller ){
+				$this->redirect($v['url']);	
+				continue;
+			}
 		}
-		$this->config = config::get();
-		$this->display('setting.index');
     }
 	
+	public function menu(){
+		$action = isset($_GET[0]) ? $_GET[0]:false;
+		if($action){
+			$controller = controller('menu');
+			if($controller){
+				if(method_exists($controller, $action)){
+					$_GET = array_slice($_GET, 1);
+					$controller->$action();
+				}else{
+					new Error('方法:"'.$action.'"不存在',404);
+				}
+			}else{
+				new Error('控制器:"menu"不存在',404) ; 
+			}	
+		}else{
+			$this->display('setting.menu');
+		}
+		
+    }
+	
+	public function system(){
+		if(isPost()){
+			$status = $this->submit();
+			if($status){
+				$this->msg(array('status'=>1,'msg'=>'系统设置成功！'),true);
+			}else{
+				$this->msg(array('status'=>0,'msg'=>'系统设置失败，请检查config目录是否有写入权限！'),false);
+			}
+		}
+		$this->display('setting.system');
+    }
+	
+	public function database(){
+		if(isPost()){
+			$status = $this->submit();
+			if($status){
+				$this->msg(array('status'=>1,'msg'=>'数据库设置成功！'),true);
+			}else{
+				$this->msg(array('status'=>0,'msg'=>'数据库设置失败，请检查config目录是否有写入权限！'),false);
+			}
+		}
+		$this->display('setting.database');
+    }
+
 	// 修改系统设置
-    public function submit()
+    protected function submit()
     {
 		// 接收表单数据
         $config = $_POST;
@@ -34,11 +81,7 @@ class settingController extends baseController {
         }
 		
         $file=USER_ROOT.'config'.DS.'config.inc.php';
-        $status=model('setting')->save($config_array,$file);
-        if($status){
-            $this->msg('网站配置成功！');
-        }else{
-            $this->msg('网站配置失败，请建站多语言文件夹与inc目录文件是否有写入权限！');
-        }
+        return model('setting')->save($config_array,$file);
+       
     }
 }

@@ -6,9 +6,11 @@
  * @copyright  Copyright (c) 2017 Anuny 
  * @license    pxcms is opensource software licensed under the MIT license.
  */
-
+ 
 // Security constant
 define('PX', true);
+
+define('STIME', microtime(true));
 
 // 目录分割符号
 define('DS', DIRECTORY_SEPARATOR);

@@ -121,13 +121,13 @@ class Px {
 			$M = isset($_GET['m']) ? $_GET['m'] : 'index';	
             $C = isset($_GET['c']) ? $_GET['c'] : 'index';
             $A = isset($_GET['a']) ? $_GET['a'] : 'index';
-			
         }else{
 			$pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
             $pathInfoArr = explode('/',trim($pathInfo,'/'));
 			$M = isset($pathInfoArr[0]) ? $pathInfoArr[0] : 'index';
 			$C = isset($pathInfoArr[1]) && $pathInfoArr[0] !== '' ? $pathInfoArr[1] : 'index';
-			$A = isset($pathInfoArr[2]) ? $pathInfoArr[2] : 'index';	
+			$A = isset($pathInfoArr[2]) ? $pathInfoArr[2] : 'index';
+			$_GET = array_slice($pathInfoArr, 3);
         }
 		// 设置当前模块名
 		config::set('MODULE', $M );
@@ -137,6 +137,8 @@ class Px {
 		
 		// 设置当前方法名
 		config::set('ACTION', $A);
+		
+		
 		
 		return array('m'=>$M, 'c'=>$C, 'a'=>$A);
     }
@@ -154,6 +156,9 @@ class Px {
 
 		// 载入错误类
 		require_once(CORE_ROOT . 'error.class.php');
+		
+		// 载入错误类
+		require_once(CORE_ROOT . 'category.class.php');
     }
 
 	

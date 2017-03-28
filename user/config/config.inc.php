@@ -1,10 +1,10 @@
 <?php defined('PX') or die('PXCMS');
 
 //是否开启调试模式
-$config['DEBUG']=true;	
+$config['DEBUG']=1;	
 
 //是否开启重写,需 PATH_INFO 支持
-$config['URL_REWRITE_ON']=1;
+$config['URL_REWRITE']=0;
 
 // 会话
 $config['USE_SESSION']=1;
@@ -16,6 +16,12 @@ $config['APP_DOMAIN']='pxcms.com';
 $config['URL_HTML_SUFFIX']='.html';
 
 $config['THEME']='default';
+
+//设置密匙
+$config['SECRETKEY']='GHJsdfhj447fsfFG45fdggs';
+
+//默认头像
+$config['NOAVATAR']='no-avatar.jpg';
 
 //设置时区
 $config['CHARSET']='UTF-8';

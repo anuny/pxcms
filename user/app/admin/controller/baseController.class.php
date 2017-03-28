@@ -8,35 +8,40 @@ class baseController extends Controller{
 
 	// admin模块前置hook
     protected function hook(){
-		$config = config::get();
-		$dbpre = $config['DB_PREFIX'];
-		$userName = $_SESSION['user'];
-		if($userName){
-			$this->user = $this->getUser($userName);
+		$this->config = config::get();
+		$this->user = model('user')->current();
+		$this->assign('config',$this->config);
+		$controller = $this->config['CONTROLLER'];
+		if($this->user['id']){
+			$this->assign('user',$this->user);
+			$list=model('category')->lists($this->config['MODULE']);
+			$this->menu = $list;
+			$this->assign('menu',$list);
+			// 登录状态禁止注册
+			if($controller == 'register'){
+				$this->redirect($this->config['URL_THIS']);
+			}
 		}else{
-			if($config['CONTROLLER'] != 'login'){
-				$this->redirect(config::get('URL_THIS').'login');
+			// 登录页面或注册页面不跳转登录界面
+			if($controller != 'login'){
+				if($controller != 'register'){
+					$this->redirect($this->config['URL_THIS'].'login');
+				}
+				
 			}
 		}
     }
-	
+
 	// 消息提示
-	protected function msg($msg){
-		echo ('<script>alert("'. $msg .'")</script>');
-	}
+	public function msg($msg,$reload=false){
+		$msg = $msg['status'].'||'.$msg['msg'];
+		setcookie("__px_notice_msg",urlencode($msg));
+		if($reload){
+			echo "<script language=javascript> location.replace(location.href);</script>";
+		}
+    }
 	
 	
-	// 获取用户信息
-	protected function getUser($userName){
-		$dbpre = config::get('DB_PREFIX');
-		$sql="
-		SELECT A.*,CONCAT(B.folder,'/',B.file) AS {$dbpre}avatar
-		FROM {$dbpre}user A
-		LEFT JOIN {$dbpre}upload B ON B.pid=A.id
-		WHERE A.name='{$userName}' AND B.type='avatar'
-		";
-		$data= $this->model->query($sql); 
-		return isset($data[0]) ? $data[0] : false;
-	}
+	
 
 } 
