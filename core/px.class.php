@@ -65,25 +65,27 @@ class Px {
 		$this->setUrl();
 		
 		// 获取模块路径
-		$module = USER_ROOT . 'app' .DS. $MCA['m'] . DS;	
+		$module = USER_ROOT . 'app' .DS. $MCA['module'] . DS;	
 
 		// 加载类
 		$this->requireClass();
 		
+		
+		
 		// 检测模块
-		if(!file_exists($module)) new Error('模块:"'.$MCA['m'].'"不存在',404) ;
+		if(!file_exists($module)) new Error('模块:"'.$MCA['module'].'"不存在',404) ;
 		
 		// 检测控制器
-        if(!class_exists($MCA['c'].'Controller')) new Error('控制器:"'.$MCA['c'].'"不存在',404) ; 
+        if(!class_exists($MCA['controller'].'Controller')) new Error('控制器:"'.$MCA['controller'].'"不存在',404) ; 
 		
-        $controllerClass = $MCA['c'].'Controller';
+        $controllerClass = $MCA['controller'].'Controller';
 				
         $controller = new $controllerClass();
 		
 		// 检测方法
-        if(!method_exists($controller, $MCA['a'])) new Error('方法:"'.$MCA['a'].'"不存在',404) ;
+        if(!method_exists($controller, $MCA['action'])) new Error('方法:"'.$MCA['action'].'"不存在',404) ;
 
-        call_user_func(array($controller,$MCA['a']));
+        call_user_func(array($controller,$MCA['action']));
     }
 	
 	protected function setUrl(){
@@ -98,51 +100,140 @@ class Px {
 		}else{
 			$root = $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER["SCRIPT_NAME"]), '', $_SERVER["SCRIPT_NAME"]);
 		}
-		
-		$root = $protocol . rtrim($root,'/') . '/';
 
-		if (!$config['URL_REWRITE_ON']) {
-			//当前入口文件
-			$root = basename($_SERVER["SCRIPT_NAME"]);
+		$root =  $protocol.rtrim($root,'/') . '/';
+		$realRoot = $root;
+		
+		
+		//当前入口文件
+		if (!$config['URL_REWRITE']) {
+			$root .= basename($_SERVER["SCRIPT_NAME"]).'/';
 		}
-		
-		$theme =  isset($config['THEME']) ? trim( $config['THEME'] ) : 'default';
-		config::set('URL_APP', $root);
-		config::set('URL_THIS', $root . $config['MODULE'] . '/');
-		config::set('URL_THEME', $root . 'user/theme/' . $config['MODULE'] . '.' . $theme . '/');
-		config::set('URL_STATIC', $root . 'user/static/');
-		config::set('URL_UPLOAD', $root . 'user/upload/');
-    }
 
-	protected function getMCA(){
-		$config = config::get();
-        // 没有开启伪静态或服务器不支持PATH_INFO
-        if(!$config['URL_REWRITE_ON'] || !isset($_SERVER['PATH_INFO'])){
-			$M = isset($_GET['m']) ? $_GET['m'] : 'index';	
-            $C = isset($_GET['c']) ? $_GET['c'] : 'index';
-            $A = isset($_GET['a']) ? $_GET['a'] : 'index';
-        }else{
-			$pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
-            $pathInfoArr = explode('/',trim($pathInfo,'/'));
-			$M = isset($pathInfoArr[0]) ? $pathInfoArr[0] : 'index';
-			$C = isset($pathInfoArr[1]) && $pathInfoArr[0] !== '' ? $pathInfoArr[1] : 'index';
-			$A = isset($pathInfoArr[2]) ? $pathInfoArr[2] : 'index';
-			$_GET = array_slice($pathInfoArr, 3);
-        }
-		// 设置当前模块名
-		config::set('MODULE', $M );
+		$theme =  isset($config['THEME']) ? trim( $config['THEME'] ) : 'default';
+		$url_module = $root . $config['MODULE'] . '/';
+		$url_controller = $url_module . $config['CONTROLLER'] . '/';
+		$url_action = $url_controller . $config['ACTION'] . '/';
 		
-		// 设置当前控制器名
-		config::set('CONTROLLER', $C);
-		
-		// 设置当前方法名
-		config::set('ACTION', $A);
-		
-		
-		
-		return array('m'=>$M, 'c'=>$C, 'a'=>$A);
+		config::set('URL_APP', $root);
+		config::set('URL_MODULE', $url_module);
+		config::set('URL_CONTROLLER', $url_controller);
+		config::set('URL_ACTION', $url_action);
+		config::set('URL_USER', $realRoot . 'user/');
+		config::set('URL_THEME', $realRoot . 'user/theme/' . $config['MODULE'] . '.' . $theme . '/');
+		config::set('URL_STATIC', $realRoot . 'user/static/');
+		config::set('URL_UPLOAD', $realRoot . 'user/upload/');
+		config::set('URL_PLUGIN', $root . 'user/plugin/');
+		config::set('URL_DATA', $realRoot . 'user/data/');
     }
 	
+	//网址解析
+    private function getMCA(){
+		$config =config::get();
+
+		$script_name = $_SERVER["SCRIPT_NAME"];//获取当前文件的路径
+		$url = $_SERVER["REQUEST_URI"];//获取完整的路径，包含"?"之后的字符串
+		
+		//去除url包含的当前文件的路径信息
+		if ( $url && @strpos($url,$script_name,0) !== false ){
+			$url = substr($url, strlen($script_name));
+		} else {
+			$script_name = str_replace(basename($_SERVER["SCRIPT_NAME"]), '', $_SERVER["SCRIPT_NAME"]);
+			if ( $url && @strpos($url, $script_name, 0) !== false ){
+				$url = substr($url, strlen($script_name));
+			}
+		}
+	
+		//第一个字符是'/'，则去掉
+		if ($url[0] == '/') {
+			$url = substr($url, 1);
+		}		
+		
+		//去除问号后面的查询字符串
+		if ( $url && false !== ($pos = @strrpos($url, '?')) ) {
+			$url = substr($url,0,$pos);
+		}
+
+		//去除后缀
+		if ($url&&($pos = strrpos($url,$config['URL_HTML_SUFFIX'])) > 0) {
+			$url = substr($url,0,$pos);
+		}
+		
+		
+		
+		$flag=0;
+		//获取模块名称
+		if ( $url && ($pos = @strpos($url, $config['URL_DEPR'], 1) )>0 ) {
+			$module = substr($url,0,$pos);//模块
+			$url = substr($url,$pos+1);//除去模块名称，剩下的url字符串
+			$flag = 1;//标志可以正常查找到模块
+		} else {	//如果找不到模块分隔符，以当前网址为模块名
+			$module = $url;
+		}
+		
+		$flag2=0;//用来表示是否需要解析参数
+		//获取操作方法名称
+		if($url&&($pos=@strpos($url,$config['URL_DEPR'],1))>0) {
+			$controller = substr($url, 0, $pos);//模块
+			$url = substr($url, $pos+1);
+			$flag2 = 1;//表示需要解析参数
+		} else {
+			//只有可以正常查找到模块之后，才能把剩余的当作操作来处理
+			//因为不能找不到模块，已经把剩下的网址当作模块处理了
+			if($flag){
+				$controller=$url;
+			}
+		}
+		
+		
+		$flag3=0;//用来表示是否需要解析参数
+		//获取操作方法名称
+		if($url&&($pos=@strpos($url,$config['URL_DEPR'],1))>0) {
+			$action = substr($url, 0, $pos);//模块
+			$url = substr($url, $pos+1);
+			$flag3 = 1;//表示需要解析参数
+		} else {
+			//只有可以正常查找到模块之后，才能把剩余的当作操作来处理
+			//因为不能找不到模块，已经把剩下的网址当作模块处理了
+			if($flag2){
+				$action=$url;
+			}
+		}
+		
+		
+
+		//解析参数
+		if($flag3) {
+			$param = explode($config['URL_PARAM_DEPR'], $url);
+			$param_count = count($param);
+			for($i=0; $i<$param_count; $i=$i+2) {			
+				$_GET[$i] = $param[$i];
+				if(isset($param[$i+1])) {
+					if( !is_numeric($param[$i]) ){
+						$_GET[$param[$i]] = $param[$i+1];
+					}
+					$_GET[$i+1] = $param[$i+1];
+				}
+			}	
+		}
+			
+		
+		$module = $module !='' ? $module : 'index';
+		$controller = $controller !='' ? $controller : 'index';
+		$action = $action !='' ? $action : 'index';
+
+		// 设置当前模块名
+		config::set('MODULE', $module );
+		
+		// 设置当前控制器名
+		config::set('CONTROLLER', $controller);
+		
+		// 设置当前方法名
+		config::set('ACTION', $action);
+		
+		return array('module'=>$module,'controller'=>$controller,'action'=>$action);	
+	}
+
 	protected function requireClass(){
 		
         // 载入控制类
@@ -165,6 +256,7 @@ class Px {
     // 自动加载函数
     public function autoload($class){
 		$module = config::get('MODULE');
+
 		// 加载模型
 		if(substr($class, -5) == 'Model'){
 			$classPath = 'app' .DS. $module .DS. 'model';
@@ -175,6 +267,7 @@ class Px {
 		// 加载扩展类库
 			$classPath = 'lib';
 		}
+		
 		$classPath = USER_ROOT . $classPath. DS .$class. '.class.php';
 		file_exists($classPath) ? require_once($classPath) : new Error($module . DS . $class . '"不存在', 404) ;
     }

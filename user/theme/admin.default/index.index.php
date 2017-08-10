@@ -7,7 +7,7 @@ $this->need('inc.header');
 
 
 <div class="container index">
-  <div class="main-left">
+  <div class="main-left" app-ctrl="public.layout">
   <div class="user-info">
     <img src="<?=$user['avatar']?>" class="avatar"/>
 	<h3><?=$user['nickname']?></h3>
@@ -22,11 +22,11 @@ $this->need('inc.header');
     <div class="content">
 	  <div class="info-group">
 	    <h3>网站标题</h3>
-	    <p>广西廓尔登传媒有限公司 <span class="badge b-green">正常运行</span></p>
+	    <p>贵州锋华正道科技发展有限公司 <span class="badge b-green">正常运行</span></p>
 	  </div>
 	  <div class="info-group">
 	    <h3>网站地址</h3>
-	    <p><a href="#"> http://banshandiaosu.com/</a></p>
+	    <p><a href="#"> http://www.gzhttp.com/</a></p>
 	  </div>
 	  <div class="info-group">
 	    <h3>网站功能</h3>
@@ -48,12 +48,12 @@ $this->need('inc.header');
 	  <hr>
 	  <div class="info-group">
 	    <h3>授权用户</h3>
-	    <p>广西廓尔登传媒有限公司 <span class="badge b-green">正常</span></p>
+	    <p>贵州锋华正道科技发展有限公司 <span class="badge b-green">正常</span></p>
 	  </div>
 
 	  <div class="info-group">
 	    <h3>授权域名</h3>
-	    <p><a href="#">banshandiaosu.com </a> <a href="#">www.banshandiaosu.com </a></p>
+	    <p><a href="#">gzhttp.com </a> <a href="#">www.gzhttp.com </a></p>
 	  </div>
 	  
 	  <div class="info-group">
@@ -69,7 +69,7 @@ $this->need('inc.header');
 
 	  <div class="info-group">
 	    <h3>官方主页</h3>
-	    <p><a href="#">www.pxpool.com</a></p>
+	    <p><a href="#">www.gzhttp.com</a></p>
 	  </div>
       
 	  <div class="info-group">
@@ -82,7 +82,7 @@ $this->need('inc.header');
 	  </div>
 	  <div class="info-group">
 	    <h3>BUG反馈:</h3>
-	    <p><a href="#">www.pxpool.com</a></p>
+	    <p><a href="#">www.gzhttp.com</a></p>
 	  </div>
 	  <hr>
 	  <div class="info-group">

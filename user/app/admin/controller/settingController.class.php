@@ -3,59 +3,80 @@
 class settingController extends baseController {
 	
 	public function index(){
-		$module = $this->config['MODULE'];
-		$controller = $this->config['CONTROLLER'];
-		foreach ($this->menu as $key=>$v){
-			if($v['pid'] && $v['module'] == $module && $v['controller'] == $controller ){
-				$this->redirect($v['url']);	
-				continue;
-			}
-		}
+		$this->menuFirst();
     }
 	
+	// 菜单设置
 	public function menu(){
-		$action = isset($_GET[0]) ? $_GET[0]:false;
-		if($action){
-			$controller = controller('menu');
-			if($controller){
-				if(method_exists($controller, $action)){
-					$_GET = array_slice($_GET, 1);
-					$controller->$action();
-				}else{
-					new Error('方法:"'.$action.'"不存在',404);
+		if($_GET[0] == 'add'){
+			$this->display('setting.menu.edit');
+			exit;
+		}
+		
+		if(isset($_GET['edit'])){
+			$id = $_GET['edit'];
+			if($id){
+				$menuArr = $this->menu;
+				$menu = model('menu')->get($id,$menuArr);
+				$this->assign('info',$menu);
+				$this->display('setting.menu.edit');
+				if(isPost()){
+					$status = $this->submitMenu();
+					if($status){
+						$this->msg(array('status'=>1,'msg'=>'菜单修改成功！'),true);
+					}else{	
+						$this->msg(array('status'=>0,'msg'=>'菜单修改失败！'),false);
+					}
 				}
+			}
+			exit;
+		}
+		$this->display('setting.menu');
+    }
+	
+	// 系统设置
+	public function system(){
+		$this->display('setting.system');
+	
+		if(isPost()){
+			$status = $this->submit();
+			if($status){
+				$this->msg(true,'系统设置成功！',true);
 			}else{
-				new Error('控制器:"menu"不存在',404) ; 
-			}	
-		}else{
-			$this->display('setting.menu');
+				$this->msg(false,'系统设置失败，请检查config目录是否有写入权限！',false);
+			}
 		}
 		
     }
 	
-	public function system(){
+	// 数据库设置
+	public function database(){
+		$this->display('setting.database');
+		
 		if(isPost()){
 			$status = $this->submit();
 			if($status){
-				$this->msg(array('status'=>1,'msg'=>'系统设置成功！'),true);
+				$this->msg(true,'数据库设置成功！',true);
 			}else{
-				$this->msg(array('status'=>0,'msg'=>'系统设置失败，请检查config目录是否有写入权限！'),false);
+				$this->msg(false,'数据库设置失败，请检查config目录是否有写入权限！',false);
 			}
 		}
-		$this->display('setting.system');
     }
 	
-	public function database(){
-		if(isPost()){
-			$status = $this->submit();
-			if($status){
-				$this->msg(array('status'=>1,'msg'=>'数据库设置成功！'),true);
-			}else{
-				$this->msg(array('status'=>0,'msg'=>'数据库设置失败，请检查config目录是否有写入权限！'),false);
-			}
-		}
-		$this->display('setting.database');
+	// 站点设置
+	public function site(){
+		echo '站点设置';
     }
+	
+	// 评论设置
+	public function comment(){
+		echo '评论设置';
+    }
+	
+	protected function submitMenu(){
+		$data = $_POST;
+		return $this->model->table('category')->data($data)->where('id='.$data['id'])->update();
+	}
 
 	// 修改系统设置
     protected function submit()

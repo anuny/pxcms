@@ -9,7 +9,7 @@ $this->need('inc.header');
 
 <!-- container -->
 <div class="container">
-  <div class="main-left">
+  <div class="main-left" app-ctrl="public.layout">
     <?php $this->need('inc.sub');?>
   </div>
   <div class="main-right">

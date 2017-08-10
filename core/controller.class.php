@@ -45,8 +45,7 @@ class Controller {
      * @param array $data 要输出的数据
      */
     protected function ajaxReturn($data){
-        echo json_encode($data);
-        exit;
+        return json_encode($data);
     }
     /**
      * 重定向至指定url

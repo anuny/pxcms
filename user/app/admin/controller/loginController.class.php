@@ -7,26 +7,19 @@ class loginController extends baseController {
 	
 	public function index(){
 		if($this->user){
-			$this->redirect(config::get('URL_THIS'));
+			$this->redirect(config::get('URL_MODULE'));
 		}else{
-			if(isPost() && isset($_POST['login'])){
-				$user = array('name'=>$_POST['name'],'password'=>$_POST['password']);
-				$this->assign('user',$user);
-				$msg = $this->submit();
-				if($msg['status']){
-					$this->redirect(config::get('URL_THIS'));
-				}else{
-					$this->assign('error',$msg['msg']);
-				}
-			} 
+			if(isAjax() && isPost()){
+				$this->submit();
+			}
 			$this->display('login.index');
 		}
     }
 	
 	public function submit(){
-		
+
 		if(empty($_POST['name'])||empty($_POST['password'])){
-			return array('msg'=>'帐号信息输入错误!','status'=>0);
+			$this->msg(false,'帐号信息输入错误!',false);
         }
 
         //获取帐号信息
@@ -34,15 +27,15 @@ class loginController extends baseController {
 
         //进行帐号验证
         if(empty($info)){
-			return array('msg'=>'登录失败! 无此管理员帐号!','status'=>0);
+			$this->msg(false,'登录失败,无此管理员帐号!',false);
         }
 
         if($info['password']<>md5($_POST['password'])){
-			return array('msg'=>'登录失败! 密码错误!','status'=>0);
+			$this->msg(false,'登录失败,密码错误!',false);
         }
 		
         if($info['status']=='disable'){
-			return array('msg'=>'登录失败! 帐号已禁用!','status'=>0);
+			$this->msg(false,'登录失败,帐号已禁用!',false);
         }
 		
         //更新帐号信息
@@ -52,7 +45,7 @@ class loginController extends baseController {
 		$this->save($data, intval($info['id']));
         //设置登录信息
         $_SESSION['user']=$info['name'];
-		return array('msg'=>'登录成功!','status'=>1); 
+		$this->msg(true,'登录成功!',config::get('URL_MODULE'));
     }
 	
 	//更新用户信息
@@ -64,6 +57,6 @@ class loginController extends baseController {
 	//退出
      public function logout(){
         unset($_SESSION['user']);
-		$this->redirect(config::get('URL_THIS'));
+		$this->redirect(config::get('URL_MODULE'));
      }
 }

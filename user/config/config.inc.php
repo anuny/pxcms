@@ -4,7 +4,7 @@
 $config['DEBUG']=1;	
 
 //是否开启重写,需 PATH_INFO 支持
-$config['URL_REWRITE']=0;
+$config['URL_REWRITE']=1;
 
 // 会话
 $config['USE_SESSION']=1;
@@ -14,6 +14,13 @@ $config['APP_DOMAIN']='pxcms.com';
 
 //伪静态后缀设置，例如 .html ，一般不需要修改
 $config['URL_HTML_SUFFIX']='.html';
+
+//模块，控制器，方法分隔符
+$config['URL_DEPR']='/';
+
+//参数分隔符
+$config['URL_PARAM_DEPR']='-';
+				
 
 $config['THEME']='default';
 

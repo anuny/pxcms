@@ -7,7 +7,7 @@ class config{
 		'DEBUG' => true,	
 
 		// 开启伪静态重写
-		'URL_REWRITE_ON' => true,
+		'URL_REWRITE' => true,
 
 		// 开启SESSION会话
 		'USE_SESSION' => true,

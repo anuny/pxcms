@@ -44,7 +44,7 @@ if(!function_exists('model')){
  * @return bool
  */
 function isAjax(){
-    if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
+    if(isset($_SERVER['HTTP_REQUEST_TYPE']) && strtolower($_SERVER['HTTP_REQUEST_TYPE']) == 'xmlhttprequest'){
         return true;
     }else{
         return false;

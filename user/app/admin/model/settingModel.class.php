@@ -27,5 +27,11 @@ class settingModel extends baseModel{
         // 写入配置
 		return @file_put_contents($file, $config);
     }
+	
+	//禁用菜单
+    public function save_edit($data){
+        $data['status']=$status;
+        $this->model->table('admin_menu')->data($data)->where('id='.$id)->update(); 
+    }
 
 } 

@@ -393,9 +393,7 @@ hr {
   color: #999;
   font-size: .92857em;
 }
-.form-group li input,
-.form-group li select,
-.form-group li textarea {
+.form-group li .input {
   background: #FFF;
   border: 1px solid #D9D9D6;
   padding: 7px;
@@ -403,49 +401,10 @@ hr {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.form-group li input:focus,
-.form-group li select:focus,
-.form-group li textarea:focus {
+.form-group li .input:focus {
   border-color: #51a7e8;
   outline: none;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 5px rgba(81, 167, 232, 0.5);
-}
-.form-group li select:focus {
-  border-radius: 2px 2px 0  0 ;
-}
-.form-group li textarea {
-  width: 50%;
-  height: 80px;
-}
-.form-group li .input-10 {
-  width: 10%;
-}
-.form-group li .input-20 {
-  width: 20%;
-}
-.form-group li .input-30 {
-  width: 30%;
-}
-.form-group li .input-40 {
-  width: 40%;
-}
-.form-group li .input-50 {
-  width: 50%;
-}
-.form-group li .input-60 {
-  width: 60%;
-}
-.form-group li .input-70 {
-  width: 70%;
-}
-.form-group li .input-80 {
-  width: 80%;
-}
-.form-group li .input-90 {
-  width: 90%;
-}
-.form-group li .input-100 {
-  width: 100%;
 }
 table {
   width: 100%;
@@ -555,6 +514,7 @@ table tr:hover {
   background: #eaeaea;
   border-right: #e5e5e5 solid 1px;
   float: left;
+  transition: width .2s;
 }
 .container .sub-menu {
   margin: 40px;
@@ -575,6 +535,7 @@ table tr:hover {
   width: 70%;
   float: right;
   margin-left: -1px;
+  transition: width .2s;
 }
 .container .main-right .content {
   padding: 40px;
@@ -599,6 +560,3 @@ table tr:hover {
 .index .user-info p {
   margin-bottom: 20px;
 }
-
-
-.login{}

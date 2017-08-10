@@ -6,17 +6,12 @@
 class userController extends baseController {
 	
 	public function index(){
-		$module = $this->config['MODULE'];
-		$controller = $this->config['CONTROLLER'];
-		foreach ($this->menu as $key=>$v){
-			if($v['pid'] && $v['module'] == $module && $v['controller'] == $controller ){
-				$this->redirect($v['url']);	
-				continue;
-			}
-		}
+		$this->menuFirst();
     }
 	
 	public function profile(){
+		$this->display('user.profile');
+		
 		if(isPost() && isset($_POST['profile'])){
 			$status = $this->submit();
 			if($status){
@@ -26,7 +21,6 @@ class userController extends baseController {
 			}
 		}
 		
-		$this->display('user.profile');
     }
 	
 	public function submit(){

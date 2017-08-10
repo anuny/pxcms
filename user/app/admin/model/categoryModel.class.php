@@ -13,9 +13,11 @@ class categoryModel extends baseModel{
 		$tree = $cat->getTree($data, 0);
 		$ret = array();
 		foreach ($tree as $key=>$value){
-			
-			// 获取链接
-			$value['url'] = $this->getUrl($value);
+			if($value['url'] == ''){
+				$value['_url'] = '';
+				// 获取链接
+				$value['url'] = $this->getUrl($value);
+			}
 			
 			// 获取高亮
 			$value = $this->getCur($value);
@@ -24,19 +26,16 @@ class categoryModel extends baseModel{
         return $ret;
     }
 	
+	
+	
 	protected function getUrl($value){
-		if($value['module'] !='index'){
-			$url = $value['module'].'/';
+		$depr = $this->config['URL_DEPR'];
+		$url = $value['url'];
+		if($url == ''){
+			$url = $value['module'].$depr.$value['controller'].$depr.$value['action'].$depr;
+			$url = str_replace('index'.$depr,'',$url);
 		}
-		if($value['controller'] !='index'){
-			$url .= $value['controller'].'/';
-		}
-		if($value['action'] !='index'){
-			$url .= $value['action'].'/';
-		}
-		if($value['url'] == ''){
-			$url = $this->config['URL_APP'].$url;
-		}
+		$url = $this->config['URL_APP'].$url;
 		return $url;
 	}
 	
